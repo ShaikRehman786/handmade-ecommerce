@@ -5,7 +5,6 @@ const AdminProductApproval = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // Fetch unapproved products
     axios.get('http://localhost:5000/api/admin/products')
       .then(response => setProducts(response.data))
       .catch(err => console.error(err));

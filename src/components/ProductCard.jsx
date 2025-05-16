@@ -1,4 +1,5 @@
 import './product-css/ProductCard.css';
+import React from 'react';
 
 const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
   return (
@@ -8,7 +9,6 @@ const ProductCard = ({ product, onAddToCart, onViewDetails }) => {
       <p>₹{product.price}</p>
       <p>⭐ {product.rating || 4.5}</p>
       <div className="product-card-actions">
-        {/* Just call onAddToCart with product */}
         <button onClick={() => onAddToCart(product)}>Add to Cart</button>
         <button onClick={() => onViewDetails(product._id)}>View Details</button>
       </div>

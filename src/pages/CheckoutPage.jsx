@@ -4,8 +4,8 @@ import Razorpay from 'razorpay';
 const CheckoutPage = () => {
   const handlePayment = () => {
     const options = {
-      key: 'YOUR_RAZORPAY_KEY', // Your Razorpay Key
-      amount: 1000, // Amount in paisa
+      key: 'YOUR_RAZORPAY_KEY', 
+      amount: 1000, 
       currency: 'INR',
       name: 'Desi Etsy',
       description: 'Payment for your order',
