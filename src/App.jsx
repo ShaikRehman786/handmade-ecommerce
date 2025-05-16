@@ -1,27 +1,26 @@
-import { Route, Routes } from "react-router-dom";
-
-import Footer from "./components/Footer";
-import Navbar from "./components/Navbar";
-
-import Contact from "./pages/Contact"; // Import contact
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import HomePage from './pages/HomePage';
+import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
+import ArtisanRegister from './pages/ArtisanRegister';
+import ArtisanDashboard from './pages/ArtisanDashboard';
+import AdminPanel from './pages/AdminPanel';
 
 function App() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
       <Navbar />
-      <main className="flex-grow container mx-auto px-4 py-6">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/contact" element={<Contact />} />   {/* Added contact route */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/artisan/register" element={<ArtisanRegister />} />
+        <Route path="/artisan/dashboard" element={<ArtisanDashboard />} />
+        <Route path="/admin" element={<AdminPanel />} />
+      </Routes>
+    </>
   );
 }
 
