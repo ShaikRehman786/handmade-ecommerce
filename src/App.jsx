@@ -1,14 +1,20 @@
-import { useState } from 'react'
-import './App.css'
+import { Component, Route, Routes } from 'react';
+import Login from './components/Login';
+class App extends Component {
+  render() {
+    return (
+      <>
+      <Routes>
+   
 
-function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <>
-      <h1>Welcome, Start Your Project</h1>
-    </>
-  )
+
+      </Routes>
+      
+      
+      </>
+    )
+  }
 }
 
 export default App
