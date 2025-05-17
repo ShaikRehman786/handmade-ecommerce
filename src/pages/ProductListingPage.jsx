@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useRef } from 'react';
+=======
+import React, { useState, useEffect } from 'react';
+>>>>>>> 4ec1cefc137af492f5598262ed057ce2d29d06c4
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -24,12 +28,21 @@ const dummyProducts = [
 
 const categories = ['All', 'Decor', 'Storage', 'Kitchen', 'Furniture'];
 
+<<<<<<< HEAD
 ////////////////////////////////////////////////
 // Slideshow Component
 ////////////////////////////////////////////////
 const Slideshow = ({ images, interval = 4000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const timerRef = useRef(null);
+=======
+const ProductListingPage = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]);
+>>>>>>> 4ec1cefc137af492f5598262ed057ce2d29d06c4
 
   useEffect(() => {
     startAuto();
@@ -110,18 +123,40 @@ const ProductListingPage = () => {
   const [filteredProducts, setFilteredProducts] = useState(dummyProducts);
   const navigate = useNavigate();
 
+  // Load products from localStorage
+  const getProducts = () => {
+    const storedProducts = JSON.parse(localStorage.getItem('products'));
+    return storedProducts && storedProducts.length > 0 ? storedProducts : dummyProducts;
+  };
+
+  useEffect(() => {
+    const allProducts = getProducts();
+    setFilteredProducts(allProducts);
+  }, []);
+
   const handleSearchClick = () => {
+<<<<<<< HEAD
     const filtered = dummyProducts.filter((p) => {
       const matchSearch   = p.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchCat      = categoryFilter === 'All' || p.category === categoryFilter;
       const matchMin      = !minPrice || p.price >= +minPrice;
       const matchMax      = !maxPrice || p.price <= +maxPrice;
       return matchSearch && matchCat && matchMin && matchMax;
+=======
+    const allProducts = getProducts();
+    const filtered = allProducts.filter((product) => {
+      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = categoryFilter === 'All' || product.category === categoryFilter;
+      const matchesMinPrice = minPrice === '' || product.price >= Number(minPrice);
+      const matchesMaxPrice = maxPrice === '' || product.price <= Number(maxPrice);
+      return matchesSearch && matchesCategory && matchesMinPrice && matchesMaxPrice;
+>>>>>>> 4ec1cefc137af492f5598262ed057ce2d29d06c4
     });
     setFilteredProducts(filtered);
   };
 
   const handleAddToCart = (product) => {
+<<<<<<< HEAD
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const idx  = cart.findIndex((c) => c._id === product._id);
     if (idx > -1) cart[idx].quantity++;
@@ -132,6 +167,21 @@ const ProductListingPage = () => {
 
   const handleViewDetails = (name) => {
     toast.info(`Viewing details for ${name}`);
+=======
+    const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const index = existingCart.findIndex((item) => item._id === product._id);
+    if (index !== -1) {
+      existingCart[index].quantity += 1;
+    } else {
+      existingCart.push({ ...product, quantity: 1 });
+    }
+    localStorage.setItem('cart', JSON.stringify(existingCart));
+    toast.success(`${product.name} added to cart!`);
+  };
+
+  const handleViewDetails = (productId) => {
+    navigate(`/products/${productId}`);
+>>>>>>> 4ec1cefc137af492f5598262ed057ce2d29d06c4
   };
   const handleResetFilters = () => {
     setSearchTerm(''); setCategoryFilter('All'); setMinPrice(''); setMaxPrice('');
@@ -156,6 +206,7 @@ const ProductListingPage = () => {
       />
       <Slideshow images={bannerImages} interval={4000} />
 
+<<<<<<< HEAD
       <div className="content-wrapper">
         <aside className="filters-sidebar">
           <h3>Filters</h3>
@@ -169,6 +220,81 @@ const ProductListingPage = () => {
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
+=======
+      <aside className="filters-sidebar">
+        <h3>Filters</h3>
+
+        <div className="filter-group">
+          <label>Search</label>
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <div className="filter-group">
+          <label>Category</label>
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+          >
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label>Min Price</label>
+          <input
+            type="number"
+            placeholder="Min Price"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            min="0"
+          />
+        </div>
+
+        <div className="filter-group">
+          <label>Max Price</label>
+          <input
+            type="number"
+            placeholder="Max Price"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            min="0"
+          />
+        </div>
+
+        <button className="search-btn" onClick={handleSearchClick}>
+          Search
+        </button>
+      </aside>
+
+      <main className="products-area">
+        <h2>Products</h2>
+        {filteredProducts.length === 0 ? (
+          <p>No products found matching your criteria.</p>
+        ) : (
+          <div className="product-listing-grid">
+            {filteredProducts.map((product) => (
+              <div key={product._id} className="product-card">
+                <img src={product.image} alt={product.name} />
+                <h3>{product.name}</h3>
+                <p>Category: {product.category}</p>
+                <p>Price: ₹{product.price}</p>
+                <p>Rating: ⭐{product.rating}</p>
+                <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
+                <button onClick={() => handleViewDetails(product._id)} className="view-details-btn">
+                  View Details
+                </button>
+              </div>
+            ))}
+>>>>>>> 4ec1cefc137af492f5598262ed057ce2d29d06c4
           </div>
           <div className="filter-group">
             <label>Min Price</label>

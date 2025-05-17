@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import '../pages/pages-css/HomePage.css'
+
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);

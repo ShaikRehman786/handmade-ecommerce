@@ -12,26 +12,26 @@ const Cart = () => {
     }
   }, []);
 
-  const increaseQty = (id) => {
+  const increaseQty = (_id) => {
     const updatedCart = cart.map((item) =>
-      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      item._id === _id ? { ...item, quantity: item.quantity + 1 } : item
     );
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  const decreaseQty = (id) => {
+  const decreaseQty = (_id) => {
     const updatedCart = cart
       .map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+        item._id === _id ? { ...item, quantity: item.quantity - 1 } : item
       )
       .filter((item) => item.quantity > 0);
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  const removeItem = (id) => {
-    const updatedCart = cart.filter((item) => item.id !== id);
+  const removeItem = (_id) => {
+    const updatedCart = cart.filter((item) => item._id !== _id);
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
@@ -64,7 +64,7 @@ const Cart = () => {
           </thead>
           <tbody>
             {cart.map((item) => (
-              <tr key={item.id}>
+              <tr key={item._id}>
                 <td>
                   {item.image ? (
                     <img
@@ -81,9 +81,9 @@ const Cart = () => {
                 <td>{item.quantity}</td>
                 <td>{(item.price * item.quantity).toFixed(2)}</td>
                 <td>
-                  <button className="btn btn-sm btn-secondary mr-1" onClick={() => decreaseQty(item.id)}>-</button>
-                  <button className="btn btn-sm btn-secondary mr-1" onClick={() => increaseQty(item.id)}>+</button>
-                  <button className="btn btn-sm btn-danger" onClick={() => removeItem(item.id)}>Remove</button>
+                  <button className="btn btn-sm btn-secondary mr-1" onClick={() => decreaseQty(item._id)}>-</button>
+                  <button className="btn btn-sm btn-secondary mr-1" onClick={() => increaseQty(item._id)}>+</button>
+                  <button className="btn btn-sm btn-danger" onClick={() => removeItem(item._id)}>Remove</button>
                 </td>
               </tr>
             ))}
