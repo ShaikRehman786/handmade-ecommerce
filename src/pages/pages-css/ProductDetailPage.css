@@ -1,0 +1,74 @@
+/* ProductDetailPage.css */
+
+.container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 1.5rem 2rem;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  text-align: center;
+}
+
+.container h2 {
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  color: #111;
+}
+
+.container img {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  object-fit: contain;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.container p {
+  font-size: 1.1rem;
+  margin: 10px 0;
+  color: #555;
+  line-height: 1.4;
+}
+
+.container p strong {
+  color: #222;
+}
+
+button {
+  margin-top: 25px;
+  padding: 12px 25px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  background-color: #28a745;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 5px 12px rgba(40,167,69,0.4);
+}
+
+button:hover {
+  background-color: #218838;
+  box-shadow: 0 7px 18px rgba(33,136,56,0.6);
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem 1rem;
+    margin: 20px 10px;
+  }
+
+  .container h2 {
+    font-size: 1.8rem;
+  }
+
+  button {
+    width: 100%;
+  }
+}

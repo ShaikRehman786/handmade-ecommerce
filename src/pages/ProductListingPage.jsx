@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -46,12 +46,24 @@ const ProductListingPage = () => {
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState(dummyProducts);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   const navigate = useNavigate();
 
+  // Load products from localStorage
+  const getProducts = () => {
+    const storedProducts = JSON.parse(localStorage.getItem('products'));
+    return storedProducts && storedProducts.length > 0 ? storedProducts : dummyProducts;
+  };
+
+  useEffect(() => {
+    const allProducts = getProducts();
+    setFilteredProducts(allProducts);
+  }, []);
+
   const handleSearchClick = () => {
-    const filtered = dummyProducts.filter((product) => {
+    const allProducts = getProducts();
+    const filtered = allProducts.filter((product) => {
       const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = categoryFilter === 'All' || product.category === categoryFilter;
       const matchesMinPrice = minPrice === '' || product.price >= Number(minPrice);
@@ -63,20 +75,18 @@ const ProductListingPage = () => {
 
   const handleAddToCart = (product) => {
     const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
-
     const index = existingCart.findIndex((item) => item._id === product._id);
     if (index !== -1) {
       existingCart[index].quantity += 1;
     } else {
       existingCart.push({ ...product, quantity: 1 });
     }
-
     localStorage.setItem('cart', JSON.stringify(existingCart));
     toast.success(`${product.name} added to cart!`);
   };
 
-  const handleViewDetails = (productName) => {
-    toast.info(`Viewing details for ${productName}`);
+  const handleViewDetails = (productId) => {
+    navigate(`/products/${productId}`);
   };
 
   return (
@@ -132,7 +142,9 @@ const ProductListingPage = () => {
           />
         </div>
 
-        <button className="search-btn" onClick={handleSearchClick}>Search</button>
+        <button className="search-btn" onClick={handleSearchClick}>
+          Search
+        </button>
       </aside>
 
       <main className="products-area">
@@ -149,10 +161,7 @@ const ProductListingPage = () => {
                 <p>Price: ₹{product.price}</p>
                 <p>Rating: ⭐{product.rating}</p>
                 <button onClick={() => handleAddToCart(product)}>Add to Cart</button>
-                <button
-                  onClick={() => handleViewDetails(product.name)}
-                  className="view-details-btn"
-                >
+                <button onClick={() => handleViewDetails(product._id)} className="view-details-btn">
                   View Details
                 </button>
               </div>
