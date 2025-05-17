@@ -1,0 +1,167 @@
+
+.admin-panel {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-panel h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.product-form {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 20px 25px;
+  border-radius: 6px;
+  margin-bottom: 40px;
+}
+
+.product-form h2 {
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.product-form input[type="text"],
+.product-form input[type="number"],
+.product-form select,
+.product-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border: 1.5px solid #ccc;
+  border-radius: 4px;
+  font-size: 15px;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.product-form input[type="text"]:focus,
+.product-form input[type="number"]:focus,
+.product-form select:focus,
+.product-form textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.product-form input[type="file"] {
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+.product-form button {
+  padding: 10px 18px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.product-form button:hover {
+  background-color: #0056b3;
+}
+
+.product-form .cancel-btn {
+  background-color: #dc3545;
+}
+
+.product-form .cancel-btn:hover {
+  background-color: #a71d2a;
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.products-table th,
+.products-table td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.products-table th {
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: 600;
+}
+
+.products-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.products-table tr:hover {
+  background-color: #f1f7ff;
+}
+
+.products-table img {
+  display: block;
+  max-width: 60px;
+  height: auto;
+  border-radius: 4px;
+}
+
+.products-table button {
+  padding: 6px 12px;
+  font-size: 14px;
+  margin-right: 5px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.products-table button:hover {
+  opacity: 0.85;
+}
+
+.products-table button:first-of-type {
+  background-color: #28a745;
+  color: white;
+}
+
+.products-table button.delete-btn {
+  background-color: #dc3545; 
+  color: white;
+}
+
+@media (max-width: 600px) {
+  .admin-panel {
+    padding: 15px;
+  }
+
+  .products-table th,
+  .products-table td {
+    padding: 8px 10px;
+  }
+
+  .product-form input[type="text"],
+  .product-form input[type="number"],
+  .product-form select,
+  .product-form textarea {
+    font-size: 14px;
+  }
+
+  .product-form button {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+
+  .products-table button {
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+}

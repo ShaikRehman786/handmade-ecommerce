@@ -14,7 +14,7 @@ const AdminProductApproval = () => {
     axios.post(`http://localhost:5000/api/admin/approve-product/${productId}`)
       .then(response => {
         alert('Product approved');
-        setProducts(products.filter(product => product._id !== productId)); // Remove approved product from list
+        setProducts(products.filter(product => product._id !== productId));
       })
       .catch(err => console.error(err));
   };
@@ -23,7 +23,7 @@ const AdminProductApproval = () => {
     axios.post(`http://localhost:5000/api/admin/reject-product/${productId}`)
       .then(response => {
         alert('Product rejected');
-        setProducts(products.filter(product => product._id !== productId)); // Remove rejected product from list
+        setProducts(products.filter(product => product._id !== productId)); 
       })
       .catch(err => console.error(err));
   };

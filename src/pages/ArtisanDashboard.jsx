@@ -1,33 +1,67 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 const ArtisanDashboard = () => {
+  const [artisanInfo, setArtisanInfo] = useState(null);
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/products/artisan')
-      .then(response => setProducts(response.data))
-      .catch(err => console.error(err));
+
+    setTimeout(() => {
+      setArtisanInfo({
+        name: 'John Artisan',
+        email: 'john.artisan@example.com',
+        phone: '123-456-7890'
+      });
+
+      setProducts([
+        { id: 1, name: 'Handmade Vase', price: 25 },
+        { id: 2, name: 'Wooden Chair', price: 150 },
+        { id: 3, name: 'Custom Painting', price: 100 }
+      ]);
+    }, 500);
   }, []);
 
   return (
-    <div className="container">
-      <h2>Your Products</h2>
-      <div className="row">
-        {products.map(product => (
-          <div className="col-md-4" key={product._id}>
-            <div className="card mb-4">
-              <img src={product.image} alt={product.name} className="card-img-top" />
-              <div className="card-body">
-                <h5 className="card-title">{product.name}</h5>
-                <p className="card-text">₹{product.price}</p>
-                <button className="btn btn-primary">Edit</button>
-                <button className="btn btn-danger ml-2">Delete</button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="container mt-4">
+      <h2>Welcome, {artisanInfo ? artisanInfo.name : 'Artisan'}!</h2>
+
+      <p className="lead">
+        Here in your dashboard, you can:
+        <ul>
+          <li>View and manage your products</li>
+          <li>Add new handmade crafts or services</li>
+          <li>Update your artisan profile and contact details</li>
+          <li>Track orders and customer requests (if implemented)</li>
+        </ul>
+      </p>
+
+      {artisanInfo && (
+        <div className="artisan-info mb-4">
+          <p><strong>Email:</strong> {artisanInfo.email}</p>
+          <p><strong>Phone:</strong> {artisanInfo.phone}</p>
+        </div>
+      )}
+
+      <h3>Your Products</h3>
+      {products.length > 0 ? (
+        <ul className="list-group mb-4">
+          {products.map(product => (
+            <li key={product.id} className="list-group-item d-flex justify-content-between align-items-center">
+              {product.name}
+              <span>${product.price}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No products found. Start adding your products!</p>
+      )}
+
+      <button
+        className="btn btn-primary"
+        onClick={() => alert('Redirect to product management page (to be implemented)')}
+      >
+        Manage Products
+      </button>
     </div>
   );
 };
