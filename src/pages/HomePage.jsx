@@ -49,7 +49,7 @@ const HomePage = () => {
     };
   }, []);
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = () => {
 
   };
 

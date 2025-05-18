@@ -2,32 +2,15 @@ import React, { useState, useEffect } from 'react';
 import '../pages/pages-css/AdminPanel.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {
+  getProducts,
+  addProduct,
+  updateProduct,
+  deleteProduct,
+} from '../services/productService'; // Import service
 
 const AdminPanel = () => {
-  const [products, setProducts] = useState(() => {
-    const savedProducts = localStorage.getItem('products');
-    return savedProducts
-      ? JSON.parse(savedProducts)
-      : [
-          {
-            _id: '1',
-            name: 'Handmade Vase',
-            price: 1200,
-            image: 'https://via.placeholder.com/150',
-            description: 'A beautiful handmade vase.',
-            decorType: 'Decor',
-          },
-          {
-            _id: '2',
-            name: 'Woven Basket',
-            price: 800,
-            image: 'https://via.placeholder.com/150',
-            description: 'A durable woven basket.',
-            decorType: 'Storage',
-          },
-        ];
-  });
-
+  const [products, setProducts] = useState([]);
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [image, setImage] = useState('');
@@ -36,8 +19,13 @@ const AdminPanel = () => {
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem('products', JSON.stringify(products));
-  }, [products]);
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    const data = await getProducts();
+    setProducts(data);
+  };
 
   const clearForm = () => {
     setName('');
@@ -60,33 +48,35 @@ const AdminPanel = () => {
     return true;
   };
 
-  const handleAddOrUpdateProduct = () => {
+  const handleAddOrUpdateProduct = async () => {
     if (!validateForm()) return;
 
     if (editingId) {
-      // Update existing product
-      setProducts((prev) =>
-        prev.map((p) =>
-          p._id === editingId ? { _id: editingId, name, price: Number(price), image, description, decorType } : p
-        )
-      );
-      clearForm();
-      toast.success('Product updated successfully');
-    } else {
-      // Add new product
-      const newProduct = {
-        _id: Date.now().toString(),
+      const updatedProduct = {
+        _id: editingId,
         name,
         price: Number(price),
         image,
         description,
         decorType,
       };
-      setProducts((prev) => [...prev, newProduct]);
-      clearForm();
+      await updateProduct(updatedProduct);
+      toast.success('Product updated successfully');
+    } else {
+      const newProduct = {
+        name,
+        price: Number(price),
+        image,
+        description,
+        decorType,
+      };
+      await addProduct(newProduct);
       toast.success('Product added successfully');
     }
-    window.dispatchEvent(new Event('productsUpdated')); // Notify listing page
+
+    clearForm();
+    loadProducts();
+    window.dispatchEvent(new Event('productsUpdated'));
   };
 
   const handleEdit = (product) => {
@@ -98,12 +88,13 @@ const AdminPanel = () => {
     setEditingId(product._id);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
-      setProducts((prev) => prev.filter((p) => p._id !== id));
-      if (editingId === id) clearForm();
-      window.dispatchEvent(new Event('productsUpdated'));
+      await deleteProduct(id);
       toast.success('Product deleted successfully');
+      if (editingId === id) clearForm();
+      loadProducts();
+      window.dispatchEvent(new Event('productsUpdated'));
     }
   };
 
@@ -148,21 +139,13 @@ const AdminPanel = () => {
           <option value="Kitchen">Kitchen</option>
           <option value="Furniture">Furniture</option>
         </select>
-
         <textarea
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-        />
-
+        <input type="file" accept="image/*" onChange={handleImageChange} />
         {image && <img src={image} alt="Preview" width="150" style={{ marginTop: '10px' }} />}
-
         <button onClick={handleAddOrUpdateProduct}>
           {editingId ? 'Update Product' : 'Add Product'}
         </button>
@@ -170,7 +153,6 @@ const AdminPanel = () => {
       </div>
 
       <hr />
-
       <h2>Product List</h2>
       <table className="products-table">
         <thead>

@@ -1,0 +1,27 @@
+// src/services/productService.js
+
+export const getProducts = async () => {
+  const savedProducts = localStorage.getItem('products');
+  return savedProducts ? JSON.parse(savedProducts) : [];
+};
+
+export const addProduct = async (product) => {
+  const products = await getProducts();
+  const newProduct = { ...product, _id: Date.now().toString() };
+  localStorage.setItem('products', JSON.stringify([...products, newProduct]));
+  return newProduct;
+};
+
+export const updateProduct = async (updatedProduct) => {
+  let products = await getProducts();
+  products = products.map((p) => (p._id === updatedProduct._id ? updatedProduct : p));
+  localStorage.setItem('products', JSON.stringify(products));
+  return updatedProduct;
+};
+
+export const deleteProduct = async (id) => {
+  const products = await getProducts();
+  const newProducts = products.filter((p) => p._id !== id);
+  localStorage.setItem('products', JSON.stringify(newProducts));
+  return true;
+};
