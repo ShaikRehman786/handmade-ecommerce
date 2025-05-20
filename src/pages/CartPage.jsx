@@ -92,7 +92,7 @@ const Cart = () => {
                 Total:
               </td>
               <td colSpan="2" className="font-weight-bold">
-                ${totalPrice.toFixed(2)}
+                {totalPrice.toFixed(2)}
               </td>
             </tr>
           </tbody>
