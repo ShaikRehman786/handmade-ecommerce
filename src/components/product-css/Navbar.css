@@ -50,7 +50,9 @@
   text-decoration: none;
   display: inline-flex;      
   align-items: center;      
-  height: 36px;             
+  height: 36px;          
+  margin-bottom: 12px;
+  margin-top: 12px;   
   line-height: normal;
 }
 
@@ -59,3 +61,5 @@
   box-shadow: 0 6px 12px rgba(255, 59, 47, 0.6);
   color: #fff;
 }
+
+

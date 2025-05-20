@@ -63,6 +63,7 @@ body, html {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 15px;
 }
 
 .sticky-header button:hover {
@@ -246,6 +247,7 @@ body, html {
   color: white;
   border: none;
   box-shadow: 0 4px 10px rgba(255, 126, 95, 0.3);
+  
 }
 
 .search-btn:hover {
@@ -454,4 +456,11 @@ body, html {
   border-radius: 8px;  /* Rounded corners */
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);  /* Optional shadow */
   margin-bottom: 30px;  /* Space below the banner */
+}
+
+
+
+
+.nav-search{
+  margin-bottom: 40px;
 }

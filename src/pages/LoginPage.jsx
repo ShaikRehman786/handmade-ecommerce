@@ -7,14 +7,23 @@ import '../pages/pages-css/LoginPage.css';
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('customer'); 
+  const [role, setRole] = useState('customer');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setTimeout(() => {
+    // Basic validation for email and password
+    if (!email || !password) {
+      toast.error('Please fill in both email and password.', {
+        position: 'top-center',
+        autoClose: 3000,
+      });
+      return;
+    }
 
+    setTimeout(() => {
+      // Assuming role is selected correctly, save it in localStorage for later use
       localStorage.setItem('userRole', role);
 
       toast.success('Login successful!', {
@@ -22,15 +31,15 @@ const LoginPage = () => {
         autoClose: 2000,
         onClose: () => {
           if (role === 'customer') {
-            navigate('/');
+            navigate('/'); // Redirect customer to homepage or product listing
           } else if (role === 'artisan') {
-            navigate('/admin');
+            navigate('/artisan-dashboard'); // Redirect artisan to their dashboard
           } else {
-            navigate('/');
+            navigate('/'); // Default fallback if no role is selected
           }
-        }
+        },
       });
-    }, 500);
+    }, 500); // Simulate server delay
   };
 
   return (
@@ -45,7 +54,7 @@ const LoginPage = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        limit={1} 
+        limit={1}
       />
       <h2>Login</h2>
       <form onSubmit={handleSubmit} className="login-form">
@@ -83,7 +92,9 @@ const LoginPage = () => {
             <option value="artisan">Artisan</option>
           </select>
         </div>
-        <button type="submit" className="btn btn-primary">Login</button>
+        <button type="submit" className="btn btn-primary">
+          Login
+        </button>
       </form>
 
       <p className="mt-3">

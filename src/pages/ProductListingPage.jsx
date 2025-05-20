@@ -1,67 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ProductContext } from '../pages/ProductContext'; // ✅ Import ProductContext
 import '../pages/pages-css/ProductListing.css';
 
-// If using images from assets folder:
-// import banner1 from '../assets/banner1.jpeg';
-// import banner2 from '../assets/banner2.jpg';
-// import banner3 from '../assets/banner3.jpg';
-// import banner4 from '../assets/banner4.jpg';
-// import banner5 from '../assets/banner5.jpg';
-
-const dummyProducts = [
-  // [your same product array here]
-];
-
-const categories = ['All', 'Decor', 'Storage', 'Kitchen', 'Furniture', 'Lighting', 'Bedroom', 'Wellness', 'Gardening', 'Living Room'];
-
-const Slideshow = ({ images, interval = 3000 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const timerRef = useRef();
-
-  useEffect(() => {
-    startAuto();
-    return stopAuto;
-  }, [currentIndex]);
-
-  const startAuto = () => {
-    stopAuto();
-    timerRef.current = setInterval(() => {
-      setCurrentIndex((i) => (i + 1) % images.length);
-    }, interval);
-  };
-
-  const stopAuto = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-  };
-
-  const goTo = (i) => setCurrentIndex((i + images.length) % images.length);
-
-  return (
-    <div className="slideshow" onMouseEnter={stopAuto} onMouseLeave={startAuto}>
-      <div className="slides" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-        {images.map((src, idx) => (
-          <div className="slide" key={idx}>
-            <img src={src} alt={`Banner ${idx + 1}`} className="banner-image" />
-          </div>
-        ))}
-      </div>
-      <button className="prev" onClick={() => goTo(currentIndex - 1)}>‹</button>
-      <button className="next" onClick={() => goTo(currentIndex + 1)}>›</button>
-      <div className="dots">
-        {images.map((_, idx) => (
-          <span
-            key={idx}
-            className={`dot ${idx === currentIndex ? 'active' : ''}`}
-            onClick={() => goTo(idx)}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
+const categories = ['All', 'Decor', 'Storage', 'Kitchen', 'Furniture'];
 
 const Header = ({ searchTerm, setSearchTerm, onSearch }) => (
   <header className="sticky-header">
@@ -76,6 +20,7 @@ const Header = ({ searchTerm, setSearchTerm, onSearch }) => (
 );
 
 const ProductListingPage = () => {
+  const { products, setProducts } = useContext(ProductContext); // ✅ Use context to manage products
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [minPrice, setMinPrice] = useState('');
@@ -83,15 +28,23 @@ const ProductListingPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const navigate = useNavigate();
 
+  // Fetch products from context and localStorage
   const getProducts = () => {
     const stored = JSON.parse(localStorage.getItem('products'));
-    return stored && stored.length > 0 ? stored : dummyProducts;
+    // Merging products from context and localStorage, to ensure the latest products are reflected
+    return stored && stored.length > 0 ? stored : products; // Fallback to context if localStorage is empty
   };
 
+  // Update the filtered products based on the context
   useEffect(() => {
-    setFilteredProducts(getProducts());
-  }, []);
+    // Sync context products to localStorage if products change
+    if (products && products.length > 0) {
+      localStorage.setItem('products', JSON.stringify(products)); // Update localStorage with context products
+    }
+    setFilteredProducts(getProducts()); // Trigger filter update with latest products
+  }, [products]); // Trigger update when products change
 
+  // Apply the search and filter criteria
   const applyFilters = () => {
     const allProducts = getProducts();
     const filtered = allProducts.filter((product) => {
@@ -101,9 +54,10 @@ const ProductListingPage = () => {
       const maxMatch = maxPrice === '' || product.price <= Number(maxPrice);
       return nameMatch && categoryMatch && minMatch && maxMatch;
     });
-    setFilteredProducts(filtered);
+    setFilteredProducts(filtered); // Set the filtered products in state
   };
 
+  // Add the product to the cart
   const handleAddToCart = (product) => {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const existingIndex = cart.findIndex((item) => item._id === product._id);
@@ -116,23 +70,22 @@ const ProductListingPage = () => {
     toast.success(`${product.name} added to cart!`);
   };
 
+  // Navigate to the product detail page
   const handleViewDetails = (id) => navigate(`/products/${id}`);
 
+  // Reset the filters to default
   const handleResetFilters = () => {
     setSearchTerm('');
     setCategoryFilter('All');
     setMinPrice('');
     setMaxPrice('');
-    setFilteredProducts(getProducts());
+    setFilteredProducts(getProducts()); // Reset to all products
   };
-
-  // const bannerImages = [banner1]; // Add other images as needed
 
   return (
     <div className="product-listing-page">
       <ToastContainer position="top-right" autoClose={2000} />
       <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={applyFilters} />
-      {/* <Slideshow images={bannerImages} interval={4000} /> */}
 
       <div className="content-container">
         <aside className="filters-sidebar">

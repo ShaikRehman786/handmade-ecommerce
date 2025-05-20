@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 
 // Pages
@@ -15,19 +15,15 @@ import CreateAccount from './pages/CreateAccount';
 import ProductListingPage from './pages/ProductListingPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
 
-
-
-
 function App() {
+  const userRole = localStorage.getItem('userRole');
+
   return (
     <>
       <Navbar />
       <Routes>
-
         <Route path="/" element={<ProductListingPage />} />
-
         <Route path="/home" element={<HomePage />} />
-
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -35,10 +31,20 @@ function App() {
         <Route path="/customer/register" element={<CustomerRegister />} />
         <Route path="/artisan/register" element={<ArtisanRegister />} />
 
-        <Route path="/artisan/dashboard" element={<ArtisanDashboard />} />
-        <Route path="/admin" element={<AdminPanel />} />
+        {/* Always declare routes, check role inside component if needed */}
+        <Route path="/artisan/dashboard" element={
+          userRole === 'artisan' ? <ArtisanDashboard /> : <Navigate to="/login" />
+        } />
+
+        <Route path="/admin" element={
+          userRole === 'admin' ? <AdminPanel /> : <Navigate to="/" />
+        } />
+
         <Route path="/products" element={<ProductListingPage />} />
         <Route path="/order-success" element={<OrderSuccessPage />} />
+
+        {/* Fallback for unmatched routes */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
   );

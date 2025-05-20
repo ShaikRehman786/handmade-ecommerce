@@ -7,7 +7,6 @@ const Navbar = () => {
 
   const userRole = localStorage.getItem('userRole');
 
-  // Optional: logout button to clear role and redirect
   const handleLogout = () => {
     localStorage.removeItem('userRole');
     navigate('/login');
@@ -22,12 +21,14 @@ const Navbar = () => {
           <Link className="nav-link" to="/">Home</Link>
           <Link className="nav-link" to="/cart">Cart</Link>
 
-          {/* Show Admin link only if userRole is 'artisan' */}
           {userRole === 'artisan' && (
-            <Link className="nav-link" to="/admin">Admin</Link>
+            <Link className="nav-link" to="/artisan/dashboard">Artisan Dashboard</Link>
           )}
 
-          {/* Show Login/Logout depending on login status */}
+          {userRole === 'admin' && (
+            <Link className="nav-link" to="/admin">Admin Panel</Link>
+          )}
+
           {userRole ? (
             <button onClick={handleLogout} className="nav-link login-btn btn-logout">
               Logout

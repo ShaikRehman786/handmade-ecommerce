@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../pages/pages-css/AdminPanel.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {
-  getProducts,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-} from '../services/productService'; // Import service
+import { getProducts, addProduct, updateProduct, deleteProduct } from '../services/productService';
 
 const AdminPanel = () => {
   const [products, setProducts] = useState([]);
@@ -52,31 +47,17 @@ const AdminPanel = () => {
     if (!validateForm()) return;
 
     if (editingId) {
-      const updatedProduct = {
-        _id: editingId,
-        name,
-        price: Number(price),
-        image,
-        description,
-        decorType,
-      };
+      const updatedProduct = { _id: editingId, name, price: Number(price), image, description, decorType };
       await updateProduct(updatedProduct);
       toast.success('Product updated successfully');
     } else {
-      const newProduct = {
-        name,
-        price: Number(price),
-        image,
-        description,
-        decorType,
-      };
+      const newProduct = { name, price: Number(price), image, description, decorType };
       await addProduct(newProduct);
       toast.success('Product added successfully');
     }
 
     clearForm();
     loadProducts();
-    window.dispatchEvent(new Event('productsUpdated'));
   };
 
   const handleEdit = (product) => {
@@ -94,44 +75,28 @@ const AdminPanel = () => {
       toast.success('Product deleted successfully');
       if (editingId === id) clearForm();
       loadProducts();
-      window.dispatchEvent(new Event('productsUpdated'));
     }
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        toast.error('Please select a valid image file');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (file && !file.type.startsWith('image/')) {
+      toast.error('Please select a valid image file');
+      return;
     }
+    const reader = new FileReader();
+    reader.onload = () => setImage(reader.result);
+    reader.readAsDataURL(file);
   };
 
   return (
     <div className="admin-panel-container">
       <ToastContainer position="top-right" autoClose={3000} />
-      <h1>Admin Panel</h1>
+      <h1>Admin Dashboard</h1>
 
       <div className="form-container">
-        <input
-          type="text"
-          placeholder="Product Name*"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Price*"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          min="0"
-        />
+        <input type="text" placeholder="Product Name*" value={name} onChange={(e) => setName(e.target.value)} />
+        <input type="number" placeholder="Price*" value={price} onChange={(e) => setPrice(e.target.value)} min="0" />
         <select value={decorType} onChange={(e) => setDecorType(e.target.value)}>
           <option value="">Select Category*</option>
           <option value="Decor">Decor</option>
@@ -139,11 +104,7 @@ const AdminPanel = () => {
           <option value="Kitchen">Kitchen</option>
           <option value="Furniture">Furniture</option>
         </select>
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+        <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
         <input type="file" accept="image/*" onChange={handleImageChange} />
         {image && <img src={image} alt="Preview" width="150" style={{ marginTop: '10px' }} />}
         <button onClick={handleAddOrUpdateProduct}>
@@ -165,29 +126,24 @@ const AdminPanel = () => {
           </tr>
         </thead>
         <tbody>
-          {products.length === 0 && (
+          {products.length === 0 ? (
             <tr>
               <td colSpan="5">No products available.</td>
             </tr>
+          ) : (
+            products.map((product) => (
+              <tr key={product._id}>
+                <td>{product.name}</td>
+                <td>{product.decorType}</td>
+                <td>{product.price}</td>
+                <td>{product.image ? <img src={product.image} alt={product.name} width="50" /> : 'No Image'}</td>
+                <td>
+                  <button onClick={() => handleEdit(product)}>Edit</button>
+                  <button onClick={() => handleDelete(product._id)}>Delete</button>
+                </td>
+              </tr>
+            ))
           )}
-          {products.map((product) => (
-            <tr key={product._id}>
-              <td>{product.name}</td>
-              <td>{product.decorType}</td>
-              <td>{product.price}</td>
-              <td>
-                {product.image ? (
-                  <img src={product.image} alt={product.name} width="50" />
-                ) : (
-                  'No Image'
-                )}
-              </td>
-              <td>
-                <button onClick={() => handleEdit(product)}>Edit</button>{' '}
-                <button onClick={() => handleDelete(product._id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
         </tbody>
       </table>
     </div>
