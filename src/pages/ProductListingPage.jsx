@@ -2,12 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ProductContext } from '../pages/ProductContext'; // ✅ Import ProductContext
+import { ProductContext } from '../pages/ProductContext';
 import '../pages/pages-css/ProductListing.css';
 
 const categories = ['All', 'Decor', 'Storage', 'Kitchen', 'Furniture'];
 
-const Header = ({ searchTerm, setSearchTerm, onSearch }) => (
+// Header Component
+const Header = ({ searchTerm, setSearchTerm }) => (
   <header className="sticky-header">
     <input
       type="text"
@@ -15,12 +16,29 @@ const Header = ({ searchTerm, setSearchTerm, onSearch }) => (
       value={searchTerm}
       onChange={(e) => setSearchTerm(e.target.value)}
     />
-    <button onClick={onSearch}>Search</button>
   </header>
 );
 
+// Banner Slider Component
+const BannerSlider = ({ images }) => {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  return (
+    <div className="banner-slider">
+      <img src={images[current]} alt={`Banner ${current + 1}`} />
+    </div>
+  );
+};
+
 const ProductListingPage = () => {
-  const { products, setProducts } = useContext(ProductContext); // ✅ Use context to manage products
+  const { products } = useContext(ProductContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [minPrice, setMinPrice] = useState('');
@@ -28,23 +46,32 @@ const ProductListingPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const navigate = useNavigate();
 
-  // Fetch products from context and localStorage
+  const bannerImages = [
+    '/images/banner1.jpg',
+    '/images/banner2.jpg',
+    '/images/banner3.jpg',
+    '/images/banner4.jpg',
+    '/images/banner5.jpg',
+  ];
+
   const getProducts = () => {
     const stored = JSON.parse(localStorage.getItem('products'));
-    // Merging products from context and localStorage, to ensure the latest products are reflected
-    return stored && stored.length > 0 ? stored : products; // Fallback to context if localStorage is empty
+    return stored && stored.length > 0 ? stored : products;
   };
 
-  // Update the filtered products based on the context
+  // Save products to localStorage when they change, and initialize filteredProducts
   useEffect(() => {
-    // Sync context products to localStorage if products change
     if (products && products.length > 0) {
-      localStorage.setItem('products', JSON.stringify(products)); // Update localStorage with context products
+      localStorage.setItem('products', JSON.stringify(products));
     }
-    setFilteredProducts(getProducts()); // Trigger filter update with latest products
-  }, [products]); // Trigger update when products change
+    setFilteredProducts(getProducts());
+  }, [products]);
 
-  // Apply the search and filter criteria
+  // Apply filters whenever filter state changes
+  useEffect(() => {
+    applyFilters();
+  }, [searchTerm, categoryFilter, minPrice, maxPrice]);
+
   const applyFilters = () => {
     const allProducts = getProducts();
     const filtered = allProducts.filter((product) => {
@@ -54,10 +81,9 @@ const ProductListingPage = () => {
       const maxMatch = maxPrice === '' || product.price <= Number(maxPrice);
       return nameMatch && categoryMatch && minMatch && maxMatch;
     });
-    setFilteredProducts(filtered); // Set the filtered products in state
+    setFilteredProducts(filtered);
   };
 
-  // Add the product to the cart
   const handleAddToCart = (product) => {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const existingIndex = cart.findIndex((item) => item._id === product._id);
@@ -70,35 +96,26 @@ const ProductListingPage = () => {
     toast.success(`${product.name} added to cart!`);
   };
 
-  // Navigate to the product detail page
   const handleViewDetails = (id) => navigate(`/products/${id}`);
 
-  // Reset the filters to default
   const handleResetFilters = () => {
     setSearchTerm('');
     setCategoryFilter('All');
     setMinPrice('');
     setMaxPrice('');
-    setFilteredProducts(getProducts()); // Reset to all products
+    setFilteredProducts(getProducts());
   };
 
   return (
     <div className="product-listing-page">
       <ToastContainer position="top-right" autoClose={2000} />
-      <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={applyFilters} />
+      <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <BannerSlider images={bannerImages} />
 
       <div className="content-container">
         <aside className="filters-sidebar">
           <h3>Filters</h3>
-          <div className="filter-group">
-            <label>Search</label>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search products..."
-            />
-          </div>
+
           <div className="filter-group">
             <label>Category</label>
             <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
@@ -107,6 +124,7 @@ const ProductListingPage = () => {
               ))}
             </select>
           </div>
+
           <div className="filter-group">
             <label>Price Range</label>
             <div className="price-range">
@@ -127,6 +145,7 @@ const ProductListingPage = () => {
               />
             </div>
           </div>
+
           <button className="search-btn" onClick={applyFilters}>Apply Filters</button>
           <button className="reset-btn" onClick={handleResetFilters}>Reset Filters</button>
         </aside>

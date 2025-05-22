@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -14,6 +15,8 @@ import LoginPage from './pages/LoginPage';
 import CreateAccount from './pages/CreateAccount';
 import ProductListingPage from './pages/ProductListingPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
+import AboutUs from './pages/AboutUs';
+
 
 function App() {
   const userRole = localStorage.getItem('userRole');
@@ -30,6 +33,7 @@ function App() {
         <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/customer/register" element={<CustomerRegister />} />
         <Route path="/artisan/register" element={<ArtisanRegister />} />
+        <Route path="/aboutus" element={<AboutUs />} />
 
         {/* Always declare routes, check role inside component if needed */}
         <Route path="/artisan/dashboard" element={
@@ -46,6 +50,7 @@ function App() {
         {/* Fallback for unmatched routes */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      <Footer/>
     </>
   );
 }

@@ -158,6 +158,47 @@ body, html {
   background: #fff;
   transform: scale(1.3);
 }
+.banner-slider {
+  width: 100%;
+  max-width: 1000px;      /* Limit max width for better layout on large screens */
+  margin: 20px auto;       /* Center horizontally with spacing */
+  padding: 10px;           /* Inner spacing */
+  border-radius: 16px;     /* Rounded corners */
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.banner-slider img {
+  width: 100%;
+  height: 240px;           /* Compact height */
+  object-fit: cover;
+  border-radius: 12px;
+  transition: transform 0.4s ease;
+}
+
+/* Optional subtle zoom effect on hover */
+.banner-slider:hover img {
+  transform: scale(1.01);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .banner-slider img {
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-slider {
+    padding: 6px;
+  }
+
+  .banner-slider img {
+    height: 150px;
+    border-radius: 10px;
+  }
+}
+
 
 /* Layout - Enhanced */
 .content-container {
